@@ -3,6 +3,7 @@ import {UsersService} from "./users.service";
 import {JoinRequestDto} from "./dto/join.request.dto";
 import { ApiOkResponse, ApiOperation, ApiResponse, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
 import { UserResponseDto } from "../common/dto/user.response.dto";
+import { User } from "../common/decorators/user.decorator";
 
 @ApiTags('USER')
 @Controller('api/users')
@@ -17,8 +18,9 @@ export class UsersController {
     })
     @ApiOperation({summary : '내정보 조회'})
     @Get()
-    getUsers(@Req() req){
-        return req.user;
+    // req 대신에 내가 만든 어노테이션 사용
+    getUsers(@User() user){
+        return user;
     }
 
     @ApiOperation({summary : '회원가입'})
@@ -39,8 +41,8 @@ export class UsersController {
     })
     @ApiOperation({summary : '로그인'})
     @Post('login')
-    logIn():string{
-        return  '';
+    logIn(@User() user) {
+        return  user;
     }
 
     // req , res 웬만하면 쓰지말자 그럼 express에 결합된다!!
