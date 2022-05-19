@@ -1,7 +1,5 @@
 import {MiddlewareConsumer, Module, NestModule} from '@nestjs/common';
-import {ConfigModule, ConfigService} from "@nestjs/config";
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import {ConfigModule, ConfigService} from "@nestjs/config"
 import {LoggerMiddleware} from "./middlewares/logger.middleware";
 import { UsersModule } from './users/users.module';
 import { WorkspacesModule } from './workspaces/workspaces.module';
@@ -20,9 +18,8 @@ import { DmsModule } from './dms/dms.module';
 // 의존성 주입을 내가 마음대로 해줄수있다.
 @Module({
   imports: [ConfigModule.forRoot({ isGlobal :true }), UsersModule, WorkspacesModule, ChannelsModule, DmsModule], //여기에 넣어준다. router   ConfigModule모듈 추가  , , load : [getEnv] 해서 외부서비스에서 env정보를 가져올수도 있다
-  controllers: [AppController],
-  providers: [AppService
-            , ConfigService
+  controllers: [],
+  providers: [ConfigService
             //클래스 말고 이렇게 내가 정해서 넣어줄수도 있다
             ,{
               provide :'CUSTOM_KEY',
