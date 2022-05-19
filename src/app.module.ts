@@ -5,7 +5,9 @@ import { UsersModule } from './users/users.module';
 import { WorkspacesModule } from './workspaces/workspaces.module';
 import { ChannelsModule } from './channels/channels.module';
 import { DmsModule } from './dms/dms.module';
-
+import { TypeORMError } from "typeorm";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import * as ormconfig from 'ormconfig';
 
 // .env 파일을 현제 프로젝트가 아니고 다른 aws 비밀공간에 넣어두었을떄 비동기요청으로 처리할수도 있기떄문에 이렇게 한다.
 // const getEnv= async ()=>{
@@ -17,7 +19,15 @@ import { DmsModule } from './dms/dms.module';
 // node의 라우터가 모듈이라고 생각하자.
 // 의존성 주입을 내가 마음대로 해줄수있다.
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal :true }), UsersModule, WorkspacesModule, ChannelsModule, DmsModule], //여기에 넣어준다. router   ConfigModule모듈 추가  , , load : [getEnv] 해서 외부서비스에서 env정보를 가져올수도 있다
+  imports: [ConfigModule.forRoot({ isGlobal :true })
+    , UsersModule
+    , WorkspacesModule
+    , ChannelsModule
+    , DmsModule
+    // 설정 forRoot 객체라고 생각하자
+    // Orm 설정
+    , TypeOrmModule.forRoot(ormconfig)
+  ], //여기에 넣어준다. router   ConfigModule모듈 추가  , , load : [getEnv] 해서 외부서비스에서 env정보를 가져올수도 있다
   controllers: [],
   providers: [ConfigService
             //클래스 말고 이렇게 내가 정해서 넣어줄수도 있다
