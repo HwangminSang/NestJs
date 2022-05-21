@@ -28,10 +28,10 @@ export class UsersController {
 
     @ApiOperation({summary : '회원가입'})
     @Post()
-    creatUser(@Body() data : JoinRequestDto){
-        const {email,nickname,password}= data;
+    async join(@Body() body : JoinRequestDto){
+        // await를 추가해야지 서비스단에서 던지 에러를 필터가 잡아 처리 후 클라이언트에게 보내준다  !!!
+            await this.userService.creatUser(body.email,body.nickname,body.password );
 
-        return  this.userService.creatUser(email,nickname,password);
     }
 
     // 알아서 STATUS 200으로 설명 및 반환
