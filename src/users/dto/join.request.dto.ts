@@ -1,25 +1,7 @@
-import {ApiProperty} from "@nestjs/swagger";
+import {  PickType } from "@nestjs/swagger";
+import { Users } from "../../entities/Users";
 
-export class JoinRequestDto{
-
-    @ApiProperty({
-        example : 'test1234@naver.com',
-        description : '이메일',
-        required : true
-    })
-    public email: string;
-
-    @ApiProperty({
-        example : 'hms',
-        description : '닉네임',
-        required : true
-    })
-    public nickname: string;
-    @ApiProperty({
-        example : 'test1234',
-        description : '비밀번호',
-        required : true
-    })
-    public password: string;
-
-}
+// PickType을 이용하여 Users엔티티의 명시한 칼럼들을 가져온다
+export class JoinRequestDto extends PickType(Users, [
+    'email','nickname', 'password'
+] as const){}

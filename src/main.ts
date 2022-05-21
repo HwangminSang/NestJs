@@ -3,13 +3,17 @@ import { AppModule } from './app.module';
 import {DocumentBuilder, SwaggerModule} from "@nestjs/swagger";
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
+import { HttpExceptionFilter } from "./httpException.filter";
+import { ValidationPipe } from "@nestjs/common";
 declare const module: any;
 
 // nest 시작작
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
-
+//validation 추가
+  app.useGlobalPipes(new ValidationPipe())
+ //httpException필터 등록
+  app.useGlobalFilters(new HttpExceptionFilter());
   //스웨거 설정시 뱐수이름 config로!! 아니면 페이지가 안나온다
   const config = new DocumentBuilder()
       .setTitle('HMS NEST_JS API')
