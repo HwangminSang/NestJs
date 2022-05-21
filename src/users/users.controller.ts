@@ -28,10 +28,8 @@ export class UsersController {
 
     @ApiOperation({summary : '회원가입'})
     @Post()
-    creatUser(@Body() data : JoinRequestDto){
-        const {email,nickname,password}= data;
-
-        return  this.userService.creatUser(email,nickname,password);
+    join(@Body() body : JoinRequestDto){
+          this.userService.creatUser(body.email,body.nickname,body.password );
     }
 
     // 알아서 STATUS 200으로 설명 및 반환
