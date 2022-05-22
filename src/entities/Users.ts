@@ -45,14 +45,15 @@ export class Users {
   @Column('varchar', { name: 'nickname', length: 30 })
   nickname: string;
 
-  @IsString()
+
   @IsNotEmpty()
   @ApiProperty({
     example : 'test1234',
     description : '비밀번호',
     required : true
   })
-  @Column('varchar', { name: 'password', length: 100, select: false })
+  //, select: false 떄문에 select 시 password는 안나옴
+  @Column('varchar', { name: 'password', length: 100 , select: false})
   password: string;
 
   @CreateDateColumn()
