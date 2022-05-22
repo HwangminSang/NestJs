@@ -2,9 +2,11 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import {DocumentBuilder, SwaggerModule} from "@nestjs/swagger";
 import cookieParser from 'cookie-parser';
-import session from 'express-session';
+import session from "express-session";
 import { HttpExceptionFilter } from "./httpException.filter";
 import { ValidationPipe } from "@nestjs/common";
+import passport from 'passport';
+import dotenv from "dotenv";
 declare const module: any;
 
 // nest 시작작
@@ -24,25 +26,31 @@ async function bootstrap() {
 
   const document=SwaggerModule.createDocument(app,config);
   SwaggerModule.setup('api',app,document);
+  dotenv.config();
 
-    const port= process.env.PORT || 5001;
-    await app.listen(port,()=>{
-        console.log(`현재 실행되는 포트는 ${port} 입니다`)
-    });
 
   //쿠기설정
   app.use(cookieParser());
-  //세션 설정
   app.use(
-      session({
-        resave : true,
-        saveUninitialized : false ,
-        secret : process.env.COOKIE_SECRET,
-        cookie : {
-          httpOnly : true,
-        }
-      })
-  )
+    session({
+       secret : process.env.COOKIE_SECRET,
+      resave : false,
+      saveUninitialized : false ,
+      cookie  : {
+      httpOnly : true,
+    }
+  }));
+  //세션 설정
+
+
+  //패스포트 사용 로그인
+  app.use(passport.initialize());
+  //패스포트에서 session 사용
+  app.use(passport.session());
+  const port= process.env.PORT || 5001;
+  await app.listen(port,()=>{
+    console.log(`현재 실행되는 포트는 ${port} 입니다`)
+  });
   // hot -reload 적용
   if (module.hot) {
     module.hot.accept();
