@@ -14,6 +14,7 @@ import { Mentions } from "./entities/Mentions";
 import { Users } from "./entities/Users";
 import { WorkspaceMembers } from "./entities/WorkspaceMembers";
 import { Workspaces } from "./entities/Workspaces";
+import { AuthModule } from "./auth/auth.module";
 
 //.env 파일을 현제 프로젝트가 아니고 다른 aws 비밀공간에 넣어두었을떄 비동기요청으로 처리할수도 있기떄문에 이렇게 한다.
 const getData= async ()=>{
@@ -58,6 +59,8 @@ const getData= async ()=>{
         }
       }
     } )
+    // A - > B  -> app.module  즉 B만 들어와도된다
+    , AuthModule
     , UsersModule
     , WorkspacesModule
     , ChannelsModule
