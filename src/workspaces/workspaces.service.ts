@@ -17,9 +17,9 @@ export class WorkspacesService {
                @InjectRepository(WorkspaceMembers)
                private  workspaceMemberRepository : Repository<WorkspaceMembers>,
                @InjectRepository(Channels)
-               private  channels : Repository<Channels>,
+               private  channelsRepository : Repository<Channels>,
                @InjectRepository(ChannelMembers)
-               private  channelMembers : Repository<ChannelMembers>,
+               private  channelMembersRepository : Repository<ChannelMembers>,
                @InjectRepository(Workspaces)
                private  workspacesRepository : Repository<Workspaces>,
                private  connection:Connection,
@@ -90,7 +90,51 @@ export class WorkspacesService {
       .createQueryBuilder('user')
       .innerJoin('user.WorkspaceMembers', 'members')
       //sqlInjection 방어
+     // innserJoin시 조인되는 테이블을 가져오지는 않는다
       .innerJoin('members.Workspace', 'w', 'w.url=:url', { url })
       .getMany();  // 자바스크립트로 객체로 바꾸다보니 좀 늦을수도 있다.
   }
+  // 쿼리 빌더로 사용
+  async  createWorkspaceMembers(url : string , email : string){
+ // this.workspacesRepository.createQueryBuilder('w').innerJoinAndSelect('w.Channels','channels').getOne();
+   const workspace = await this.workspacesRepository.findOne({
+      where : {url},
+      join : {
+        alias : 'workspace',
+        //조인과 동시에 select 하여 channel 안의 정보도 다 들고온다
+        innerJoinAndSelect : {
+          channels : 'workspace.Channels'
+        }
+      }
+    });
+    const user = await this.usersRepository.findOne({where : { email }})
+    if (!user){
+      return null;
+     }
+
+    const workspaceMember = new WorkspaceMembers();
+    workspaceMember.WorkspaceId = workspace.id;
+    workspaceMember.UserId = user.id;
+    await this.workspaceMemberRepository.save(workspaceMember);
+    const channelMember = new ChannelMembers();
+    channelMember.ChannelId = workspace.Channels.find((
+      v)=> v.name === '일반' ).id;
+    channelMember.UserId= user.id;
+    await  this.channelMembersRepository.save(channelMember);
+
+  }
+
+  async getWorkspaceMember(url : string , id : number){
+    return this.usersRepository
+      .createQueryBuilder('user')
+      .where('user.id = :id',{id})
+      // .andWhere('user.name = :name'.{name})
+      // 조인만 하고 workpspaces의 정보는 가져오지않늗나
+      .innerJoin( 'user.Workspaces','workspaces','workspaces.url = :url',{
+        url
+      })
+      .getOne();
+
+  }
+
 }
