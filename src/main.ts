@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import {DocumentBuilder, SwaggerModule} from "@nestjs/swagger";
 import cookieParser from 'cookie-parser';
 import session from "express-session";
-import { HttpExceptionFilter } from "./httpException.filter";
+import { HttpExceptionFilter } from "./http-exception.filter";
 import { ValidationPipe } from "@nestjs/common";
 import passport from 'passport';
 import dotenv from "dotenv";

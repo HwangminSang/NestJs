@@ -1,11 +1,13 @@
 import {Body, Controller, Get, Param, Post, Query} from '@nestjs/common';
 import { ApiTags } from "@nestjs/swagger";
+import { ChannelsService } from "./channels.service";
+import { User } from "../common/decorators/user.decorator";
+import { PostChatDto } from "./dto/post-chat.dto";
 @ApiTags('Channel')
 @Controller('api/workspaces/:url/channels')
 export class ChannelsController {
 
-    constructor() {
-
+    constructor(private readonly channelsService : ChannelsService) {
     }
 
     //모든 채널
@@ -48,7 +50,12 @@ export class ChannelsController {
     }
     //채팅방 생성
     @Post(':name/chats')
-    postChat(@Body() body){
+    postChat(
+      @Param('url') url : string,
+      @Param('name') name :string,
+      @Body() body : PostChatDto,
+      @User() user){
+        return this.channelsService.postChat({url , content : body.content , name , myId : user.id});
     }
 
 }
