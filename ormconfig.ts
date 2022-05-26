@@ -33,7 +33,7 @@ const config: TypeOrmModuleOptions = {
   autoLoadEntities: true,
   charset: 'utf8mb4',
   synchronize: true,  //처음만 true
-  logging: true,  //로깅 보여주기
+  logging: process.env.NODE_ENV !== 'production',  //로깅 보여주기
   keepConnectionAlive: true,  // hot-loding 시 계속 사용가능
 };
 
