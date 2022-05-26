@@ -122,7 +122,29 @@ export class ChannelsService {
     })
   }
 
-  async postChat(p: { myId: any; name: string; url: string; content: any }) {
+  async postChat({ myId, name , url , content }) {
+
+    const channel = await this.channelsRepository
+      .createQueryBuilder('channel')
+      .innerJoin('channel.Workspace','w','w.url = :url',{url})
+      .where('channel.name = : name',{name})
+      .getOne();
+
+    if(!channel){
+      throw  new NotFoundException('존재하지 않는 채널입니다');
+    }
+
+    const chats = new ChannelChats();
+    chats.content=content;
+    chats.UserId=myId;
+    chats.ChannelId = channel.id;
+
+    const saveChat =  await  this.channelChatsRepository.save(chats);
+    const chatWithUser = await  this.channelChatsRepository.findOne({
+      where : { id : saveChat.id},
+      relations : ['User' , 'Channel']
+    })
+
 
   }
 }
